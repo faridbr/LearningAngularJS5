@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { Ingredient } from '../../shared/ingredient.model';
+import { ShoppingListService } from '../../shared/services/shopping-list.service';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -10,27 +11,37 @@ export class ShoppingEditComponent implements OnInit {
 
   @ViewChild('nameInput') nameInputRef: ElementRef;
   @ViewChild('amountInput') amountInputRef: ElementRef;
-  @Output() ingredientAdded = new  EventEmitter<Ingredient>();
-  @Output() ingredientDeleted = new  EventEmitter<string>();
   @Input() ingredient: Ingredient;
+  selectedIngredientId: number;
 
-  constructor() {
-   }
+  constructor(private shoppingListService: ShoppingListService) {}
 
   ngOnInit() {
+    this.onClearForm();
+    this.shoppingListService.selectedIngredient.subscribe((id: number)=>{
+      this.selectedIngredientId = id;
+      this.ingredient = this.shoppingListService.getIngredient(id);
+    })
   }
 
   onClearForm(){
-    this.ingredient = new Ingredient('', 0);
+    this.ingredient = new Ingredient('', null);
   }
 
   onAddItem(){
-    this.ingredientAdded.emit(new Ingredient(this.nameInputRef.nativeElement.value, this.amountInputRef.nativeElement.value));
+    const ing = new Ingredient(this.nameInputRef.nativeElement.value, this.amountInputRef.nativeElement.value);
+    this.shoppingListService.addIngredient(ing);
     this.onClearForm();
   }
 
-  onDeleteItem(name: string){
-    this.ingredientDeleted.emit(name);
+  onUpdateItem(){
+    const ing = new Ingredient(this.nameInputRef.nativeElement.value, this.amountInputRef.nativeElement.value);
+    this.shoppingListService.updateIngredient(ing, this.selectedIngredientId);
+    this.onClearForm();
+  }
+
+  onDeleteItem(){
+    this.shoppingListService.deleteIngredient(this.selectedIngredientId);
     this.onClearForm();
   }
 }
