@@ -1,0 +1,11 @@
+.alert-warning, .alert-success{
+    padding: 20px;
+    color: white;
+}
+.alert-warning{
+    background-color:coral;
+}
+
+.alert-success{
+    background-color:green;
+}
