@@ -10,6 +10,8 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { RouterModule } from "@angular/Router";
 import { AuthGuard } from "./auth-guard.service";
 import { CanDeactivateGuard } from "./can-deactivate-guard.service";
+import { ErrorPageComponent } from "./error-page/error-page.component";
+import { ServerResolver } from "./server.resolver.service";
 
 const appRoutes: Routes = [
     {path: '', component: HomeComponent, pathMatch: 'full'}, 
@@ -17,16 +19,18 @@ const appRoutes: Routes = [
       {path: ':id/:name', component: UserComponent},
     ]},
     {path: 'servers',canActivateChild: [AuthGuard], component: ServersComponent, children: [ //add children to route servers 
-      {path: ':id', component: ServerComponent},
+      {path: ':id', component: ServerComponent, resolve: {server: ServerResolver}},
       {path: ':id/edit', component: EditServerComponent, canDeactivate: [CanDeactivateGuard]}
     ]},
-    {path:'not-found', component: PageNotFoundComponent},
+    //{path:'not-found', component: PageNotFoundComponent},
+    {path:'not-found', component: ErrorPageComponent, data: {message: 'Page not found!'}},
     {path: '**', redirectTo: '/not-found'}
   ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes) //useHash compatible for old browser it add /#/ in url
+        //RouterModule.forRoot(appRoutes, {useHash: true}) //useHash compatible for old browser it add /#/ in url
     ],
     exports: [RouterModule]
 })
