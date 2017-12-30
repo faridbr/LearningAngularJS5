@@ -1,9 +1,10 @@
 <div class="row">
   <div class="col-xs-10">
-    <app-shopping-edit  [ingredient]="selectedIngredient"></app-shopping-edit>
+    <button class="btn btn-primary" (click)="addShopping()" *ngIf="!isCreatingNewShopping">New Shopping</button>
+    <router-outlet></router-outlet>
     <hr>
     <ul class="list-group">
-      <a href="#" class="list-group-item" style="cursor: pointer" *ngFor="let ingredient of ingredients; let i = index" (click)="onSelect(i)">{{ ingredient.name }} ({{ ingredient.amount }})</a>
+      <a class="list-group-item" style="cursor: pointer" *ngFor="let ingredient of ingredients; let i = index" (click)="onShoppingSelect(i)">{{ ingredient.name }} ({{ ingredient.amount }})</a>
     </ul>
   </div>
 </div>

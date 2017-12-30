@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-xs-12">
-    <form>
+    <form #shoppingForm="ngForm">
       <div class="row">
         <div class="col-sm-5 form-group">
           <label for="name">Name</label>
@@ -13,10 +13,10 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <button class="btn btn-success" type="submit" (click)="onAddItem()">Add</button>
-          <button class="btn btn-success" type="submit" (click)="onUpdateItem()">Update</button>
-          <button class="btn btn-danger" type="button" (click)="onDeleteItem()">Delete</button>
-          <button class="btn btn-primary" type="button" (click)="onClearForm()">Clear</button>
+          <button class="btn btn-success" type="submit" (click)="onAddItem()" *ngIf="id === -1">Add</button>
+          <button class="btn btn-success" type="submit" (click)="onUpdateItem()" *ngIf="id !== -1">Update</button>
+          <button class="btn btn-danger" type="button" (click)="onDeleteItem()" *ngIf="id !== -1">Delete</button>
+          <button class="btn btn-primary" type="button" (click)="resetForm(shoppingForm)">Clear</button>
         </div>
       </div>
     </form>
