@@ -1,12 +1,9 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/Router';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 import { Ingredient } from '../../shared/ingredient.model';
 import { ShoppingListService } from '../../shared/services/shopping-list.service';
-import { ActivatedRoute } from '@angular/Router';
-import { Params } from '@angular/Router';
-import { Router } from '@angular/Router';
-import { AfterContentInit } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
-import { NgForm } from '@angular/forms/src/directives/ng_form';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -15,52 +12,77 @@ import { NgForm } from '@angular/forms/src/directives/ng_form';
 })
 export class ShoppingEditComponent implements OnInit  {
 
-  @ViewChild('nameInput') nameInputRef: ElementRef;
-  @ViewChild('amountInput') amountInputRef: ElementRef;
-  @Input() ingredient: Ingredient;
+  shoppingForm: FormGroup
 
   constructor(private shoppingListService: ShoppingListService, private route: ActivatedRoute, private router: Router) {}
 
-  id: number = -1;
+  id: number;
+  editMode = true;
 
   ngOnInit() {
-    this.onClearForm();
-    
+    this.createChildConrols();
+    this.getInitialParams();
+   
+  }
+
+  createChildConrols(){
+    this.shoppingForm = new FormGroup({
+      'name': new FormControl(null, Validators.required),
+      'amount': new FormControl(null, Validators.required),
+    });
+  }
+ 
+  getInitialParams(){
     this.route.params.subscribe((params: Params)=>{
+      this.hideNewButton(params['id']);
       if(params['id']){
         this.id = +params['id'];
-        this.ingredient = this.shoppingListService.getIngredient(this.id);
-        this.shoppingListService.isAddingShopping.next(false);
-      }else{
-        this.shoppingListService.isAddingShopping.next(true);
-        this.id = -1;
+        const ingredient = this.shoppingListService.getIngredient(this.id);
+        this.setShoppingForm(ingredient);
       }
     })
   }
 
+  hideNewButton(editMode: boolean){
+    this.editMode = editMode;
+    this.shoppingListService.isAddingShopping.next(!this.editMode);
+  }
+
+  setShoppingForm(ingredient: Ingredient){
+    this.shoppingForm.setValue({
+      'name': ingredient.name,
+      'amount': ingredient.amount
+    });
+  }
+
   onClearForm(){
-
-    this.ingredient = new Ingredient('', null);
+    this.shoppingForm.reset();
   }
 
-  onAddItem(){
-    const ing = new Ingredient(this.nameInputRef.nativeElement.value, this.amountInputRef.nativeElement.value);
+  onSaveShopping(){
+    if(!this.editMode)
+      this.addItem();
+    else{
+      this.updateItem();
+      this.hideNewButton(false);
+      this.router.navigate(['../new'], {relativeTo: this.route});
+    }
+  }
+
+  addItem(){
+    const ing = new Ingredient(this.shoppingForm.value.name, this.shoppingForm.value.amount);
     this.shoppingListService.addIngredient(ing);
-    this.ingredient = new Ingredient('', null);
+    this.onClearForm();
   }
 
-  onUpdateItem(){
-    const ing = new Ingredient(this.nameInputRef.nativeElement.value, this.amountInputRef.nativeElement.value);
+  updateItem(){
+    const ing = new Ingredient(this.shoppingForm.value.name, this.shoppingForm.value.amount);
     this.shoppingListService.updateIngredient(ing, this.id);
+    this.onClearForm();
   }
 
   onDeleteItem(){
     this.shoppingListService.deleteIngredient(this.id);
     this.router.navigate(['../'], {relativeTo: this.route});
   }
-
-resetForm(form: NgForm) {
-  form.reset();
-  }
-
 }
