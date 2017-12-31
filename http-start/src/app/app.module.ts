@@ -4,21 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { ShortenPipe } from './shorten.pipe';
-import { FilterPipe } from './filter.pipe';
+import { ServerService } from 'app/services/server.service';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ShortenPipe,
-    FilterPipe
+    AppComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule
   ],
-  providers: [],
+  providers: [ServerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

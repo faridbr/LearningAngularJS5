@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { ShortenPipe } from './shorten.pipe';
-import { FilterPipe } from './filter.pipe';
+import { JoinCaractersPipe } from './join-caracters.pipe';
+import { SortPipe } from './sort.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ShortenPipe,
-    FilterPipe
+    JoinCaractersPipe,
+    SortPipe
   ],
   imports: [
     BrowserModule,
