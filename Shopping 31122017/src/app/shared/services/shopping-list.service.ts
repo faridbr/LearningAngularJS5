@@ -1,29 +1,19 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
-import { DataStorageService } from './data-storage.service';
+import { Injectable } from '@angular/core';
 import { Ingredient } from '../ingredient.model';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
-export class ShoppingListService implements OnDestroy {
+export class ShoppingListService {
 
   isAddingShopping = new Subject<boolean>();
   ingredientsChanged = new Subject<Ingredient[]>()
-  ingredientsSoubscription: Subscription;
 
-  private AllIngredients = new Array<Ingredient>();
+  private AllIngredients: Ingredient[] = [
+                                            new Ingredient('Apples', 5),
+                                            new Ingredient('Tomatoes', 10)
+                                        ];
 
-  constructor(private dataStorageService: DataStorageService ) { 
-    this.ingredientsSoubscription = this.dataStorageService.ingredientsLoaded.subscribe(
-      (ingredients: Ingredient[])=>{
-        this.AllIngredients = ingredients;
-        this.ingredientsChanged.next(this.ingredients);
-      })
-  }
-
-  ngOnDestroy(){
-    this.ingredientsSoubscription.unsubscribe();
-  }
+  constructor() { }
 
   get ingredients(){
     //return this.AllIngredients;
