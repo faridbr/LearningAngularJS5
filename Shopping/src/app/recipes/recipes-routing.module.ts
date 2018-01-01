@@ -8,7 +8,7 @@ import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
 import { AuthGuard } from '../shared/guard/auth-guard.service';
 
 const recipesRoutes: Routes = [
-  {path: 'recipes', component: RecipesComponent, canActivate: [AuthGuard], 
+  {path: '', component: RecipesComponent, canActivate: [AuthGuard],
       children:[
           {path: '', component: RecipeStartComponent, canActivate: [AuthGuard]},
           {path: 'new', component: RecipeEditComponent, canActivate: [AuthGuard]},
@@ -23,6 +23,7 @@ const recipesRoutes: Routes = [
     RouterModule.forChild(recipesRoutes)
   ],
   exports: [
-    RouterModule]
+    RouterModule
+  ]
 })
 export class RecipesRoutingModule { }

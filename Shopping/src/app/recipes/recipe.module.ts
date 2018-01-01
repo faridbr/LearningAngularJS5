@@ -17,7 +17,7 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     ReactiveFormsModule,
     RecipesRoutingModule,
-    SharedModule
+    SharedModule,
   ],
   declarations: [
     RecipesComponent,
