@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { Recipe } from '../../recipes/recipe-list/recipe.model';
 import { Ingredient } from '../ingredient.model';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class DataStorageService {
@@ -12,11 +13,16 @@ export class DataStorageService {
   recipesLoaded = new Subject<Recipe[]>()
   ingredientsLoaded = new Subject<Ingredient[]>()
 
-  constructor(private http: Http) { }
+  constructor(private http: Http, private authService: AuthService) { }
 
   loadData(){
-    this.loadIngredients();
-    this.loadRecipes();
+    const token = this.authService.getToken();
+    this.loadDataWithToken(token);
+  }
+
+  loadDataWithToken(token: string){
+    this.loadIngredients(token);
+    this.loadRecipes(token);
   }
 
   saveData(recipes: Recipe[], ingredients: Ingredient[]){
@@ -40,8 +46,8 @@ export class DataStorageService {
       );
   }
 
-  private loadRecipes(){
-    this.http.get('https://ng-recipe-book-88223.firebaseio.com/recipe.json')
+  private loadRecipes(token: string){
+    this.http.get(`https://ng-recipe-book-88223.firebaseio.com/recipe.json?auth=${token}`)
       .map(
         (response: Response)=>{
           const recipes: Recipe[] = response.json();
@@ -57,8 +63,8 @@ export class DataStorageService {
       );
   }
 
-  private loadIngredients(){
-    this.http.get('https://ng-recipe-book-88223.firebaseio.com/ingredient.json')
+  private loadIngredients(token: string){
+    this.http.get(`https://ng-recipe-book-88223.firebaseio.com/ingredient.json?auth=${token}`)
       .subscribe(
         (response: Response)=>{this.ingredientsLoaded.next(response.json()); console.log('Ingredients loaded succefully');},
         (error: Response)=>{console.log('Something went wrong when loading ingredients');}

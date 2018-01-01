@@ -4,6 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/Router';
 import { Recipe } from '../recipe-list/recipe.model';
 import { RecipeService } from '../../shared/services/recipe.service';
 import { Ingredient } from '../../shared/ingredient.model';
+import { AuthService } from '../../shared/services/auth.service';
 
 
 @Component({
@@ -16,13 +17,16 @@ export class RecipeDetailComponent implements OnInit {
    recipe: Recipe;
    id: number;
 
-  constructor(private recipeService: RecipeService, private route: ActivatedRoute, private router: Router) {
-   }
+  constructor(private recipeService: RecipeService, 
+              private route: ActivatedRoute, 
+              private authService: AuthService, 
+              private router: Router) {}
 
   ngOnInit() {
     this.route.params.subscribe((params: Params)=>{
       this.id = +params['id']
-      this.recipe = this.recipeService.getRecipe(this.id);
+      if(this.authService.isAuthenticated)
+        this.recipe = this.recipeService.getRecipe(this.id);
     })
   }
 

@@ -7,6 +7,7 @@ import { Params } from '@angular/Router/src/shared';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-shopping-list',
@@ -20,7 +21,7 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   isCreatingNewShopping = false;
   ingredients: Ingredient[];
 
-  constructor(private shoppingListService: ShoppingListService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private shoppingListService: ShoppingListService, private authService: AuthService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.ingredients = this.shoppingListService.ingredients;
@@ -34,8 +35,12 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   }
 
   addShopping(){
-    this.isCreatingNewShopping = true;
-    this.router.navigate(['new'], {relativeTo: this.route});
+    if(!this.authService.isAuthenticated())
+      this.router.navigate(['/recipes']);
+    else{
+      this.isCreatingNewShopping = true;
+      this.router.navigate(['new'], {relativeTo: this.route});
+    }
   }
 
   onShoppingSelect(index: number){

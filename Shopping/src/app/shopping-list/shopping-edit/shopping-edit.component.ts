@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Ingredient } from '../../shared/ingredient.model';
 import { ShoppingListService } from '../../shared/services/shopping-list.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -14,7 +15,7 @@ export class ShoppingEditComponent implements OnInit  {
 
   shoppingForm: FormGroup
 
-  constructor(private shoppingListService: ShoppingListService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private shoppingListService: ShoppingListService, private authService: AuthService ,private route: ActivatedRoute, private router: Router) {}
 
   id: number;
   editMode = true;
@@ -22,7 +23,8 @@ export class ShoppingEditComponent implements OnInit  {
   ngOnInit() {
     this.createChildConrols();
     this.getInitialParams();
-   
+    if(!this.authService.isAuthenticated())
+      this.router.navigate(['/']);
   }
 
   createChildConrols(){

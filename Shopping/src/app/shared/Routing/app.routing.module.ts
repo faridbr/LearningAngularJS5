@@ -9,23 +9,28 @@ import { RecipeEditComponent } from "../../recipes/recipe-edit/recipe-edit.compo
 import { ShoppingListComponent } from "../../shopping-list/shopping-list.component";
 import { ShoppingEditComponent } from "../../shopping-list/shopping-edit/shopping-edit.component";
 import { RecipeStartComponent } from "../../recipes/recipe-start/recipe-start.component";
+import { SignupComponent } from "../../auth/signup/signup.component";
+import { SigninComponent } from "../../auth/signin/signin.component";
+import { AuthGuard } from "../guard/auth-guard.service";
 
 const appRoutes: Routes = [
     {path: '', redirectTo: '/recipes', pathMatch: 'full'},
-    {path: 'recipes', component: RecipesComponent, 
+    {path: 'recipes', component: RecipesComponent, canActivate: [AuthGuard], 
         children:[
-            {path: '', component: RecipeStartComponent },
-            {path: 'new', component: RecipeEditComponent},
-            {path: ':id', component: RecipeDetailComponent},
-            {path: ':id/edit', component: RecipeEditComponent}
+            {path: '', component: RecipeStartComponent, canActivate: [AuthGuard]},
+            {path: 'new', component: RecipeEditComponent, canActivate: [AuthGuard]},
+            {path: ':id', component: RecipeDetailComponent, canActivate: [AuthGuard]},
+            {path: ':id/edit', component: RecipeEditComponent, canActivate: [AuthGuard]}
         ]
     },
-    {path: 'shopping-list', component: ShoppingListComponent,
+    {path: 'shopping-list', component: ShoppingListComponent, canActivate: [AuthGuard],
         children:[
-            {path: 'new', component: ShoppingEditComponent},
-            {path: ':id', component: ShoppingEditComponent}
+            {path: 'new', component: ShoppingEditComponent, canActivate: [AuthGuard]},
+            {path: ':id', component: ShoppingEditComponent, canActivate: [AuthGuard]}
         ]
-    }
+    },
+    {path: 'signup', component: SignupComponent},
+    {path: 'signin', component: SigninComponent}
 ];
 
 @NgModule({
