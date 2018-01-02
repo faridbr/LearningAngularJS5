@@ -1,47 +1,36 @@
-import {Component, OnInit, OnDestroy} from "@angular/core";
-import { ActivatedRoute } from "@angular/Router";
-import { Router } from "@angular/Router";
-import { Response } from "@angular/http";
-import { Subscription } from "rxjs/Subscription"; 
+import { Component } from '@angular/core';
+import { Response } from '@angular/http';
 
-import { ShoppingListService } from "../../shared/services/shopping-list.service";
-import { RecipeService } from "../../shared/services/recipe.service";
-import { DataStorageService } from "../../shared/services/data-storage.service";
-import { AuthService } from "../../shared/services/auth.service";
+import { DataStorageService } from '../../shared/data-storage.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html'
-}) 
-export class HeaderComponent implements OnInit{
+  selector: 'app-header',
+  templateUrl: './header.component.html'
+})
+export class HeaderComponent {
+  constructor(private dataStorageService: DataStorageService,
+              private authService: AuthService) {
+  }
 
-    userIsAuthenticated = false;
+  onSaveData() {
+    this.dataStorageService.storeRecipes()
+      .subscribe(
+        (response: Response) => {
+          console.log(response);
+        }
+      );
+  }
 
-    constructor(private shoppingListService: ShoppingListService, 
-                private recipeService: RecipeService,     
-                private dataStorageService: DataStorageService, 
-                private authService: AuthService,
-                private route: ActivatedRoute, 
-                private router: Router){}
+  onFetchData() {
+    this.dataStorageService.getRecipes();
+  }
 
-    ngOnInit(){
-    }                
+  onLogout() {
+    this.authService.logout();
+  }
 
-    onShoppingSelect(){
-        this.shoppingListService.isAddingShopping.next(false);
-        this.router.navigate(['shopping-list'],{relativeTo: this.route});
-    }
-
-    onSave(){
-        this.dataStorageService.saveData(this.recipeService.recipes, this.shoppingListService.ingredients);
-    }
-    
-    onFetch(){
-        this.dataStorageService.loadData();
-    }
-
-    sinOut(){
-        this.authService.signOut();
-        this.router.navigate(["/signin"]);
-    }
+  isAuthenticated(){
+    return this.authService.isAuthenticated();
+  }
 }
