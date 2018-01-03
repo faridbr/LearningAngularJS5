@@ -4,7 +4,8 @@ import 'rxjs/add/operator/do';
 
 export class LogginInterceptor implements HttpInterceptor{
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
-        return next.handle(req).do(
+        return next.handle(req)
+        .do(
             event=>{
                 console.log('loggin interceptor: ', event);
             }
