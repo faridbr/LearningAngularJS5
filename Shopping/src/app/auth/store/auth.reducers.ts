@@ -5,8 +5,6 @@ export interface IState {
     authenticated: boolean
 }
 
-const localStorageTokenName = 'token';
-
 const initialState: IState = {
     token: null,
     authenticated: false
@@ -22,7 +20,7 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
         case AuthActions.SET_TOKEN:
             return {...state, token: action.payload, authenticated: true};
         default:
-            const token = localStorage.getItem(localStorageTokenName);
+            const token = localStorage.getItem('token');
             return {...state, token: token, authenticated: token != null && token.length > 0};
     }
 }
