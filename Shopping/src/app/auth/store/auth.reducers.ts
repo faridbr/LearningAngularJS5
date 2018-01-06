@@ -20,7 +20,6 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
         case AuthActions.SET_TOKEN:
             return {...state, token: action.payload, authenticated: true};
         default:
-            const token = localStorage.getItem('token');
-            return {...state, token: token, authenticated: token != null && token.length > 0};
+            return {...state, token: null, authenticated: false};
     }
 }
